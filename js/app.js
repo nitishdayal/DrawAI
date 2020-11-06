@@ -4,12 +4,15 @@ import { CREDS } from './creds.js'
 const $canvas = document.querySelector('#canvas')
 const $clearCanvasButton = document.querySelector('.clear-canvas')
 const $sendButton = document.querySelector('.send')
+const $resetButton = document.querySelector('.reset')
+
 const $promptSpan = document.querySelector('.prompt')
 const $timerElement = document.querySelector('.timer')
 const $currentPlayerSpan = document.querySelector('.current-player')
 const $currentTurnSpan = document.querySelector('.current-turn')
-const $gameStatusHeader = document.querySelector('.game-status')
 
+const $gameStatusHeader = document.querySelector('.game-status')
+const $gameOverHeader = document.querySelector('.game-over')
 // Canvas context
 const ctx = $canvas.getContext('2d')
 
@@ -19,7 +22,7 @@ const ctx = $canvas.getContext('2d')
 // Mouse coordinates
 let coord = { x: 0, y: 0 }
 
-const prompt = [
+let prompt = [
   'House',
   'Tree',
   'Apple',
@@ -54,7 +57,7 @@ let currentPlayer = 1,
   currentTurn = 1,
   currentPrompt;
 
-const results = {
+let results = {
   turn_1: {
     prompt: '',
     1: {
@@ -192,11 +195,10 @@ const updatePlayer = () => {
 const updateTurn = () => {
   if (
     results[`turn_${currentTurn}`][`1`].drawing.length > 0 &&
-    results[`turn_${currentTurn}`][`2`].drawing.length > 0) {
+    results[`turn_${currentTurn}`][`2`].drawing.length > 0
+  ) {
     ++currentTurn
-    if (currentTurn > 10) {
-      gameOver()
-    }
+    if (currentTurn > 10) gameOver()
     if (currentTurn <= 10) updatePrompt()
   }
 
@@ -213,8 +215,171 @@ const gameOver = () => {
   stopTimer(timer)
 
   isGameOver = true
-  $gameStatusHeader.textContent = `Game Over!`
   $sendButton.disabled = true
+  $resetButton.classList.toggle('hidden')
+  $gameStatusHeader.classList.toggle('hidden')
+  $gameOverHeader.classList.toggle('hidden')
+}
+
+const resetGame = () => {
+  results = {
+    turn_1: {
+      prompt: '',
+      1: {
+        drawing: '',
+        results: [],
+        points: 0
+      },
+      2: {
+        drawing: '',
+        results: [],
+        points: 0
+      }
+    },
+    turn_2: {
+      1: {
+        drawing: '',
+        results: [],
+        points: 0
+      },
+      2: {
+        drawing: '',
+        results: [],
+        points: 0
+      }
+    },
+    turn_3: {
+      1: {
+        drawing: '',
+        results: [],
+        points: 0
+      },
+      2: {
+        drawing: '',
+        results: [],
+        points: 0
+      }
+    },
+    turn_4: {
+      1: {
+        drawing: '',
+        results: [],
+        points: 0
+      },
+      2: {
+        drawing: '',
+        results: [],
+        points: 0
+      }
+    },
+    turn_5: {
+      1: {
+        drawing: '',
+        results: [],
+        points: 0
+      },
+      2: {
+        drawing: '',
+        results: [],
+        points: 0
+      }
+    },
+    turn_6: {
+      1: {
+        drawing: '',
+        results: [],
+        points: 0
+      },
+      2: {
+        drawing: '',
+        results: [],
+        points: 0
+      }
+    },
+    turn_7: {
+      1: {
+        drawing: '',
+        results: [],
+        points: 0
+      },
+      2: {
+        drawing: '',
+        results: [],
+        points: 0
+      }
+    },
+    turn_8: {
+      1: {
+        drawing: '',
+        results: [],
+        points: 0
+      },
+      2: {
+        drawing: '',
+        results: [],
+        points: 0
+      }
+    },
+    turn_9: {
+      1: {
+        drawing: '',
+        results: [],
+        points: 0
+      },
+      2: {
+        drawing: '',
+        results: [],
+        points: 0
+      }
+    },
+    turn_10: {
+      1: {
+        drawing: '',
+        results: [],
+        points: 0
+      },
+      2: {
+        drawing: '',
+        results: [],
+        points: 0
+      }
+    },
+  }
+
+  prompt = [
+    'House',
+    'Tree',
+    'Apple',
+    'Whiskers',
+    'Smile',
+    'Table',
+    'Lip',
+    'Bird',
+    'Hat',
+    'Fish',
+    'Nose',
+    'Leaf',
+    'Shoe',
+    'Ball',
+    'Headphones',
+    'Phone',
+    'Hand',
+    'T-shirt',
+    'Spiral',
+    'Eye'
+  ]
+
+  isGameOver = false
+  $sendButton.disabled = false
+  currentTurn = 1
+
+  updateTurn()
+  updatePrompt()
+
+  Array.from([$gameStatusHeader, $gameOverHeader, $resetButton])
+    .forEach(e => e.classList.toggle('hidden'))
+
+  startTimer()
 }
 
 // ===================================== CANVAS FUNCTIONS
@@ -327,9 +492,6 @@ const sendImg = () => fetch(
       if (tag.includes(results[`turn_${currentTurn}`].prompt))
         results[`turn_${currentTurn}`][`${currentPlayer}`].points = 1
     })
-
-    console.log(formattedData)
-    console.log(results)
   })
   .catch(e => console.error(e))
 
@@ -368,3 +530,4 @@ document.addEventListener('DOMContentLoaded', () => {
 $clearCanvasButton.addEventListener('click', clearCanvas)
 
 $sendButton.addEventListener('click', submitDrawing)
+$resetButton.addEventListener('click', resetGame)
