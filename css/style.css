@@ -1,3 +1,17 @@
 .hidden {
   display: none;
 }
+
+.drawings {
+  height: 60vh;
+  overflow: auto;
+}
+
+.drawings img {
+  display: block;
+}
+
+.player-1-drawings,
+.player-2-drawings {
+  display: inline-block;
+}

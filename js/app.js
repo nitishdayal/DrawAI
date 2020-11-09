@@ -1,5 +1,3 @@
-import { CREDS } from './creds.js'
-
 // ============================================================= ELEMENT SELECTORS
 const $canvas = document.querySelector('#canvas')
 const $clearCanvasButton = document.querySelector('.clear-canvas')
@@ -7,20 +5,34 @@ const $sendButton = document.querySelector('.send')
 const $resetButton = document.querySelector('.reset')
 
 const $promptSpan = document.querySelector('.prompt')
-const $timerElement = document.querySelector('.timer')
 const $currentPlayerSpan = document.querySelector('.current-player')
 const $currentTurnSpan = document.querySelector('.current-turn')
 
+const $timerHeader = document.querySelector('.timer')
+const $promptHeader = document.querySelector('.prompt-header')
 const $gameStatusHeader = document.querySelector('.game-status')
 const $gameOverHeader = document.querySelector('.game-over')
-// Canvas context
+
+const $gameSection = document.querySelector('.game-display')
+
+const $winnerSection = document.querySelector('.winner-display')
+const $drawingsDiv = $winnerSection.querySelector('.drawings')
+const $playerOneDrawingsDiv = $drawingsDiv.querySelector('.player-1-drawings')
+const $playerTwoDrawingsDiv = $drawingsDiv.querySelector('.player-2-drawings')
+const $winnerNameSpan = $winnerSection.querySelector('.winner-name')
+const $playerOnePointsSpan = $winnerSection.querySelector('.player-1-points')
+const $playerTwoPointsSpan = $winnerSection.querySelector('.player-2-points')
+
+/**
+ * @type {CanvasRenderingContext2D} Canvas context
+ */
 const ctx = $canvas.getContext('2d')
 
 
 
 // ============================================================= VARIABLE DECLARATIONS
 // Mouse coordinates
-let coord = { x: 0, y: 0 }
+let mouseCoordinates = { x: 0, y: 0 }
 
 let prompt = [
   'House',
@@ -47,6 +59,7 @@ let prompt = [
 
 // Boolean to determine if mouse is down and within bounds of canvas
 let isPainting = false
+
 let isGameOver = false
 
 // Canvas drawing converted to Base64 string
@@ -184,6 +197,12 @@ let results = {
 
 
 // ============================================================= HELPER FUNCTIONS
+const removeChildren = (parent) => {
+  while (parent.lastChild) {
+    parent.removeChild(parent.lastChild);
+  }
+}
+
 const updatePlayer = () => {
   if (!currentPlayer) currentPlayer = 1
   else if (currentPlayer === 1) currentPlayer = 2
@@ -216,9 +235,11 @@ const gameOver = () => {
 
   isGameOver = true
   $sendButton.disabled = true
-  $resetButton.classList.toggle('hidden')
-  $gameStatusHeader.classList.toggle('hidden')
-  $gameOverHeader.classList.toggle('hidden')
+
+  Array.from([$gameStatusHeader, $gameOverHeader, $resetButton, $promptHeader, $timerHeader])
+    .forEach(e => e.classList.toggle('hidden'))
+
+  displayWinners()
 }
 
 const resetGame = () => {
@@ -373,16 +394,106 @@ const resetGame = () => {
   $sendButton.disabled = false
   currentTurn = 1
 
-  updateTurn()
-  updatePrompt()
-
-  Array.from([$gameStatusHeader, $gameOverHeader, $resetButton])
+  Array.from([$gameStatusHeader, $gameOverHeader, $resetButton, $promptHeader, $timerHeader, $winnerSection, $gameSection])
     .forEach(e => e.classList.toggle('hidden'))
 
+  removeChildren($playerOneDrawingsDiv)
+  removeChildren($playerTwoDrawingsDiv)
+  clearCanvas()
+  updateTurn()
+  updatePrompt()
   startTimer()
 }
 
+const calculatePoints = () => {
+  console.log(results)
+
+  const points = {
+    1: 0,
+    2: 0
+  }
+
+  for (const turn in results) {
+    if (results.hasOwnProperty(turn)) {
+      const element = results[turn];
+      if (element['1']['points']) points['1']++
+      if (element['2']['points']) points['2']++
+    }
+  }
+
+  return points
+}
+
+const convertBase64ToImage = (base64, player, prompt) => {
+  const $img = document.createElement('img')
+  $img.src = base64
+  $img.alt = `Drawing by ${player} of ${prompt}`
+  $img.width = 250
+  $img.height = 250
+  $img.style.border = `1px solid black`
+
+  return $img
+}
+
+const displayWinners = () => {
+  $winnerSection.classList.toggle('hidden')
+  $gameSection.classList.toggle('hidden')
+
+  const points = calculatePoints()
+  let winner;
+  if (points[1] > points[2]) {
+    winner = 'Player 1'
+  } else if (points[1] < points[2]) {
+    winner = 'Player 2'
+  } else if (points[1] === points[2]) {
+    winner = 'Draw!'
+  }
+
+  $winnerNameSpan.textContent = winner
+  $playerOnePointsSpan.textContent = points[1]
+  $playerTwoPointsSpan.textContent = points[2]
+
+  const drawings = {
+    player_1: [],
+    player_2: []
+  }
+
+  const createElement = (type, text) => {
+    const el = document.createElement(type)
+    el.textContent = text
+
+    return el
+  }
+
+  for (const turn in results) {
+    if (results.hasOwnProperty(turn)) {
+      const currentTurn = results[turn]
+      const prompt = currentTurn.prompt
+      const playerOneImg = convertBase64ToImage(currentTurn['1']['drawing'], `Player 1`, prompt)
+      const playerTwoImg = convertBase64ToImage(currentTurn['2']['drawing'], `Player 2`, prompt)
+
+      drawings.player_1.push(playerOneImg)
+      drawings.player_2.push(playerTwoImg)
+    }
+  }
+
+  const { player_1, player_2 } = drawings
+
+  const playerOneDrawingsHeader = createElement('h1', 'Player One')
+  const playerTwoDrawingsHeader = createElement('h1', 'Player Two')
+
+  $playerOneDrawingsDiv.appendChild(playerOneDrawingsHeader)
+  $playerTwoDrawingsDiv.appendChild(playerTwoDrawingsHeader)
+  player_1.forEach(drawing => { $playerOneDrawingsDiv.appendChild(drawing) })
+  player_2.forEach(drawing => { $playerTwoDrawingsDiv.appendChild(drawing) })
+}
+
+
 // ===================================== CANVAS FUNCTIONS
+const clearCanvas = () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+}
+
 // Set canvas size
 const resize = () => {
   ctx.canvas.width = '500'
@@ -392,8 +503,8 @@ const resize = () => {
 
 // Set mouse coordinates
 const setCoordinates = (event) => {
-  coord.x = event.clientX - $canvas.offsetLeft
-  coord.y = event.clientY - $canvas.offsetTop
+  mouseCoordinates.x = event.clientX - $canvas.offsetLeft
+  mouseCoordinates.y = event.clientY - $canvas.offsetTop
 }
 
 const startPainting = (event) => {
@@ -412,13 +523,13 @@ const sketch = (event) => {
   ctx.strokeStyle = '#000'
 
   // Start drawing at mouse coordinates
-  ctx.moveTo(coord.x, coord.y)
+  ctx.moveTo(mouseCoordinates.x, mouseCoordinates.y)
 
   // Update coordinates as mouse moves within canvas
   setCoordinates(event)
 
   // Set path for line from last recorded coordinates to new coordinates
-  ctx.lineTo(coord.x, coord.y)
+  ctx.lineTo(mouseCoordinates.x, mouseCoordinates.y)
 
   // Draw line 
   ctx.stroke()
@@ -430,14 +541,14 @@ const startTimer = () => {
   if (!isGameOver) {
     const time = 60
     let current = 1
-    $timerElement.textContent = `${time} seconds left`
-    $currentPlayerSpan.textContent = currentPlayer
-    timer = setInterval(() => {
-      if (current >= time) {
-        submitDrawing(timer)
-      }
 
-      $timerElement.textContent = `${time - current} seconds left`
+    $timerHeader.textContent = `${time} seconds left`
+    $currentPlayerSpan.textContent = currentPlayer
+
+    timer = setInterval(() => {
+      if (current >= time) submitDrawing(timer)
+
+      $timerHeader.textContent = `${time - current} seconds left`
       ++current
     }, 1000)
   }
@@ -451,18 +562,9 @@ const setOptions = () => {
   options = {
     method: 'POST',
     body: JSON.stringify({
-      "requests": [
-        {
-          "image": {
-            "content": `${base64Uri.replace('data:image/png;base64,', '')}`
-          },
-          "features": [
-            {
-              "type": "LABEL_DETECTION",
-              "maxResults": 50
-            }]
-        }
-      ]
+      image: {
+        content: `${base64Uri.replace('data:image/png;base64,', '')}`
+      }
     }),
     headers: {
       'Content-Type': 'application/json'
@@ -473,18 +575,14 @@ const setOptions = () => {
 
 
 // ============================================================= EVENT HANDLERS
-const clearCanvas = () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-}
 
-const sendImg = () => fetch(
-  `https://vision.googleapis.com/v1/images:annotate?key=${CREDS}`, options)
+const sendImg = () => fetch(`https://drawai-server.herokuapp.com/getTags`, options)
   .then((res) => res.json(), res => console.error(res))
   .then((data) => {
-    const formattedData = data
-      .responses[0]
-      .labelAnnotations
-      .map(res => res.description)
+    /**
+     * @type {Array<string>} Array of tags returned from API after analyzing image
+    */
+    const formattedData = data.labels.map(res => res.description)
 
     results[`turn_${currentTurn}`][`${currentPlayer}`].results = formattedData
 
@@ -492,27 +590,34 @@ const sendImg = () => fetch(
       if (tag.includes(results[`turn_${currentTurn}`].prompt))
         results[`turn_${currentTurn}`][`${currentPlayer}`].points = 1
     })
+    return formattedData
   })
   .catch(e => console.error(e))
 
 const submitDrawing = () => {
+  $sendButton.disabled = true
   base64Uri = $canvas.toDataURL()
   results[`turn_${currentTurn}`][`${currentPlayer}`].drawing = base64Uri
 
   setOptions()
+  const timerPromise = () => new Promise(() => stopTimer(timer))
 
-  sendImg()
-    .then(() => { results[`turn_${currentTurn}`][`${currentPlayer}`].drawing = base64Uri })
-    .then(() => clearCanvas())
-    .then(() => stopTimer(timer))
-    .then(() => updateTurn())
-    .then(() => updatePlayer())
-    .then(() => {
-      if (!isGameOver) startTimer()
-    })
-    .catch(e => console.error(e))
+  timerPromise()
+    .then(
+      sendImg()
+        .then(() => { results[`turn_${currentTurn}`][`${currentPlayer}`].drawing = base64Uri })
+        .then(() => clearCanvas())
+        .then(() => updateTurn())
+        .then(() => updatePlayer())
+        .then(() => {
+          if (!isGameOver) {
+            startTimer()
+            setTimeout(() => { $sendButton.disabled = false }, 500)
+          }
+        })
+        .catch(e => console.error(e))
+    )
 }
-
 
 
 
@@ -520,14 +625,15 @@ const submitDrawing = () => {
 document.addEventListener('DOMContentLoaded', () => {
   resize()
   updatePrompt()
+
   document.addEventListener('mousedown', startPainting)
   document.addEventListener('mouseup', stopPainting)
   document.addEventListener('mousemove', sketch)
-  window.addEventListener('resize', resize)
+
+  $clearCanvasButton.addEventListener('click', clearCanvas)
+
+  $sendButton.addEventListener('click', submitDrawing)
+  $resetButton.addEventListener('click', resetGame)
+
   startTimer()
 })
-
-$clearCanvasButton.addEventListener('click', clearCanvas)
-
-$sendButton.addEventListener('click', submitDrawing)
-$resetButton.addEventListener('click', resetGame)

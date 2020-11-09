@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DrawAI</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/app.js" type="module" defer></script>
+  </head>
+  <body>
+    <main>
+      <h1>DrawAI</h1>
+
+      <section class="game-display">
+        <h1 class="game-status">
+          Turn <span class="current-turn">1</span> | Player
+          <span class="current-player">1</span>
+        </h1>
+        <h1 class="game-over hidden">Game Over!</h1>
+        <h3 class="prompt-header">Draw this: <span class="prompt"></span></h3>
+        <h3 class="timer"></h3>
+        <br />
+        <canvas id="canvas"></canvas>
+        <button class="clear-canvas">Clear</button>
+        <button class="send">Send</button>
+      </section>
+
+      <section class="winner-display hidden">
+        <h1>Winner is... <span class="winner-name"></span></h1>
+        <h2>
+          Player 1 points: <span class="player-1-points"></span> | Player 2
+          points: <span class="player-2-points"></span>
+        </h2>
+        <section class="drawings-container">
+          <h2>Drawings</h2>
+          <div class="drawings">
+            <div class="player-1-drawings"></div>
+            <div class="player-2-drawings"></div>
+          </div>
+        </section>
+        <button class="reset hidden">Reset</button>
+      </section>
+    </main>
+  </body>
+</html>
