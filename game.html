@@ -3,43 +3,77 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DrawAI</title>
+    <title>Doodle Data</title>
+    <link
+      rel="icon"
+      href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💩</text></svg>'
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/bulma.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <script src="js/app.js" type="module" defer></script>
   </head>
   <body>
     <main>
-      <h1>DrawAI</h1>
-
-      <section class="game-display">
-        <h1 class="game-status">
-          Turn <span class="current-turn">1</span> | Player
-          <span class="current-player">1</span>
-        </h1>
-        <h1 class="game-over hidden">Game Over!</h1>
-        <h3 class="prompt-header">Draw this: <span class="prompt"></span></h3>
-        <h3 class="timer"></h3>
-        <br />
-        <canvas id="canvas"></canvas>
-        <button class="clear-canvas">Clear</button>
-        <button class="send">Send</button>
+      <section class="hero is-primary is-bold">
+        <div class="hero-body">
+          <div class="container">
+            <h1 class="title">Doodle Data</h1>
+            <h2 class="subtitle">
+              Be the better artist - as decided by an artistically challenged AI
+              🤖
+            </h2>
+          </div>
+        </div>
       </section>
 
-      <section class="winner-display hidden">
-        <h1>Winner is... <span class="winner-name"></span></h1>
-        <h2>
-          Player 1 points: <span class="player-1-points"></span> | Player 2
-          points: <span class="player-2-points"></span>
-        </h2>
-        <section class="drawings-container">
-          <h2>Drawings</h2>
-          <div class="drawings">
-            <div class="player-1-drawings"></div>
-            <div class="player-2-drawings"></div>
-          </div>
+      <section class="section" style="text-align: center">
+        <section class="game-display">
+          <h1 class="game-status is-size-4">
+            Turn <span class="current-turn">1</span> &nbsp;&nbsp;|&nbsp;&nbsp;
+            Player
+            <span class="current-player">1</span>
+          </h1>
+          <h1 class="game-over hidden is-size-4">Game Over!</h1>
+          <h3 class="prompt-header is-size-4">
+            Draw this: <span class="prompt"></span>
+          </h3>
+          <h3 class="timer is-size-5"></h3>
+          <br />
+          <canvas id="canvas" class="mb-4"></canvas>
+          <button class="clear-canvas button is-info">Clear</button>
+          <button class="send button is-primary">Send</button>
         </section>
-        <button class="reset hidden">Reset</button>
+        <section class="winner-display hidden">
+          <h1 class="is-size-4">
+            Winner is... <span class="winner-name"></span>
+          </h1>
+          <h2 class="is-size-4">
+            Player 1 points: <span class="player-1-points"></span> | Player 2
+            points: <span class="player-2-points"></span>
+          </h2>
+          <section class="drawings-container">
+            <h2 class="is-size-3">Drawings</h2>
+            <div class="drawings mb-4">
+              <div class="player-1-drawings"></div>
+              <div class="player-2-drawings"></div>
+            </div>
+          </section>
+          <button class="reset hidden button is-primary">Reset</button>
+        </section>
       </section>
     </main>
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Built</strong> by
+          <a href="http://nitishdayal.me">Nitish Dayal</a>.
+        </p>
+      </div>
+    </footer>
   </body>
 </html>

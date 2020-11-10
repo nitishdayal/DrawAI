@@ -428,6 +428,7 @@ const convertBase64ToImage = (base64, player, prompt) => {
   const $img = document.createElement('img')
   $img.src = base64
   $img.alt = `Drawing by ${player} of ${prompt}`
+  $img.title = `Drawing by ${player} of ${prompt}`
   $img.width = 250
   $img.height = 250
   $img.style.border = `1px solid black`
@@ -498,13 +499,13 @@ const clearCanvas = () => {
 const resize = () => {
   ctx.canvas.width = '500'
   ctx.canvas.height = '500'
-  $canvas.setAttribute('style', 'border: 1px solid black; display: block;')
+  $canvas.setAttribute('style', 'border: 1px solid black; display: block; margin: 0 auto;')
 }
 
 // Set mouse coordinates
 const setCoordinates = (event) => {
-  mouseCoordinates.x = event.clientX - $canvas.offsetLeft
-  mouseCoordinates.y = event.clientY - $canvas.offsetTop
+  mouseCoordinates.x = event.pageX - $canvas.offsetLeft
+  mouseCoordinates.y = event.pageY - $canvas.offsetTop
 }
 
 const startPainting = (event) => {

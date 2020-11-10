@@ -3,15 +3,85 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Draw vs. Me</title>
+    <title>Doodle Data</title>
+    <link
+      rel="icon"
+      href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💩</text></svg>'
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/bulma.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <h1>Draw vs Me</h1>
-    <p>
-      Take turns against a friend to draw the given prompt. Whoever gets closest
-      to the prompt wins a point. Whoever has the most points after ten rounds
-      wins the game. Are you ready?
-    </p>
-    <a href="./game.html">Start</a>
+    <main>
+      <section class="hero is-primary is-bold">
+        <div class="hero-body">
+          <div class="container">
+            <h1 class="title">Doodle Data</h1>
+            <h2 class="subtitle">
+              Be the better artist - as decided by an artistically challenged AI
+              🤖
+            </h2>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="columns is-justify-content-space-around">
+          <div class="column is-half">
+            <article class="message is-dark">
+              <div class="message-header">
+                <p>How To Play</p>
+              </div>
+              <div class="message-body">
+                <p class="pb-4">
+                  🤖 Hello, my name is Doodle Data - I analyze your drawings and
+                  try to guess them. Help me become a smarter robot!
+                </p>
+                <p class="pb-4">
+                  <strong>Doodle Data</strong> is a local two-player game in
+                  which you and a friend are given a prompt, and have 60 seconds
+                  each to draw the prompt to the best of your abilities. After
+                  10 turns, your drawings are analyzed by an AI - if the AI
+                  recognizes your drawing as the given prompt, you get a point!
+                  The person with the most points wins.
+                </p>
+                <ol>
+                  <li>
+                    This AI is <em>not smart.</em> Draw to the best of your
+                    abilities!
+                  </li>
+                  <li>Each player has the same prompt for a given turn.</li>
+                  <li>
+                    Players turns are rotated immediately; make sure you're
+                    ready to go!
+                  </li>
+                  <li>Scores are only displayed at the end. No cheating!</li>
+                </ol>
+              </div>
+            </article>
+          </div>
+          <div class="column is-one-third">
+            <figure class="image">
+              <img
+                src="https://cdn.pixabay.com/photo/2015/04/03/16/36/bee-705412__340.png"
+              />
+            </figure>
+            <a href="./game.html" class="button is-link">Start</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Built</strong> by
+          <a href="http://nitishdayal.me">Nitish Dayal</a>.
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
