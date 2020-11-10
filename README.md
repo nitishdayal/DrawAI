@@ -5,6 +5,14 @@
 # About
 See if you're the better artist! Take turns against a friend to draw a given prompt; whichever drawing the computer can recognize as the given prompt gets a point. Whoever has the most points after 10 rounds, wins!
 
+**THIS AI IS NOT MEANT FOR DRAWINGS, SO TRY _EXTRA HARD_.**
+
+For example, this is bad:  
+![Bad ball](./screenshots/bad_ball.png)
+
+This is better:  
+![Good ball](./screenshots/good_ball.png)
+
 # Technologies
 * Vanilla JS - No JS libraries or frameworks used
 * `HTMLCanvasElement` - The canvas is the core of this application
