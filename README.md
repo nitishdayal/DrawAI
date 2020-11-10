@@ -13,7 +13,7 @@ See if you're the better artist! Take turns against a friend to draw a given pro
 * [Heroku](https://heroku.com) - Hosting for a single-route Express server
 * [Google Fonts](<https://fonts.google.com/>) - Because I like FOUS and horrible user experiences :)
 
-# Directory Struture
+# Directory Structure
 ```bash
 ├── README.md
 ├── css/
@@ -27,7 +27,6 @@ See if you're the better artist! Take turns against a friend to draw a given pro
     ├── landing.png
     ├── main-game.png
     └── results.png
-
 ```
 
 # Installation
@@ -125,6 +124,7 @@ app.listen(process.env.PORT || 5000, () => {
 
 # Future Project Goals
 
+- [ ] **CODE COMMENTS:** Use comment blocks to explain large chunks of logic.
 - [ ] **Code Minification:** Currently serving code with comments and whitespace to client.
 - [ ] **General refactoring/cleanup:** Split JS into multiple files, take advantage of ES modules.
 - [ ] **Additional styling:** As it stands, it's enough for an MVP. But there's lots of room for improvement.

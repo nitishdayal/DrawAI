@@ -1,4 +1,7 @@
 // ============================================================= ELEMENT SELECTORS
+/**
+ * @type {HTMLCanvasElement} Canvas
+ */
 const $canvas = document.querySelector('#canvas')
 const $clearCanvasButton = document.querySelector('.clear-canvas')
 const $sendButton = document.querySelector('.send')
@@ -34,6 +37,7 @@ const ctx = $canvas.getContext('2d')
 // Mouse coordinates
 let mouseCoordinates = { x: 0, y: 0 }
 
+// Array of prompts given to user to draw
 let prompt = [
   'House',
   'Tree',
@@ -60,16 +64,20 @@ let prompt = [
 // Boolean to determine if mouse is down and within bounds of canvas
 let isPainting = false
 
+// Boolean to determine if 10 rounds have been played
 let isGameOver = false
 
 // Canvas drawing converted to Base64 string
 // Options object for FETCH requests to Vision API
+// 60 second timer
 let base64Uri, options, timer;
 
 let currentPlayer = 1,
   currentTurn = 1,
   currentPrompt;
 
+// Results object to keep track of prompt for a given turn, user drawing (base64 string), results 
+// from API, and if a point was awarded
 let results = {
   turn_1: {
     prompt: '',
@@ -197,12 +205,17 @@ let results = {
 
 
 // ============================================================= HELPER FUNCTIONS
+/**
+ * Remove all chidren elements from a given parent element
+ * @param {HTMLElement} parent - The parent element
+ */
 const removeChildren = (parent) => {
-  while (parent.lastChild) {
-    parent.removeChild(parent.lastChild);
-  }
+  while (parent.lastChild) parent.removeChild(parent.lastChild)
 }
 
+/**
+ * Rotate between player one and player two - default to one if undefined
+ */
 const updatePlayer = () => {
   if (!currentPlayer) currentPlayer = 1
   else if (currentPlayer === 1) currentPlayer = 2
@@ -211,6 +224,10 @@ const updatePlayer = () => {
   return currentPlayer
 }
 
+/**
+ * Determines if both players have drawings recorded for a given turn; if so,
+ * increments turn by one.
+ */
 const updateTurn = () => {
   if (
     results[`turn_${currentTurn}`][`1`].drawing.length > 0 &&
@@ -394,8 +411,15 @@ const resetGame = () => {
   $sendButton.disabled = false
   currentTurn = 1
 
-  Array.from([$gameStatusHeader, $gameOverHeader, $resetButton, $promptHeader, $timerHeader, $winnerSection, $gameSection])
-    .forEach(e => e.classList.toggle('hidden'))
+  Array.from([
+    $gameStatusHeader,
+    $gameOverHeader,
+    $resetButton,
+    $promptHeader,
+    $timerHeader,
+    $winnerSection,
+    $gameSection
+  ]).forEach(e => e.classList.toggle('hidden'))
 
   removeChildren($playerOneDrawingsDiv)
   removeChildren($playerTwoDrawingsDiv)
@@ -406,8 +430,6 @@ const resetGame = () => {
 }
 
 const calculatePoints = () => {
-  console.log(results)
-
   const points = {
     1: 0,
     2: 0
@@ -424,6 +446,13 @@ const calculatePoints = () => {
   return points
 }
 
+/**
+ * Turns a base64 string of an image into an <img> element
+ * 
+ * @param {string} base64
+ * @param {string} player
+ * @param {string} prompt
+ */
 const convertBase64ToImage = (base64, player, prompt) => {
   const $img = document.createElement('img')
   $img.src = base64
@@ -490,6 +519,7 @@ const displayWinners = () => {
 }
 
 
+
 // ===================================== CANVAS FUNCTIONS
 const clearCanvas = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -537,6 +567,7 @@ const sketch = (event) => {
 }
 
 
+
 // ===================================== TIMER FUNCTIONS
 const startTimer = () => {
   if (!isGameOver) {
@@ -558,6 +589,7 @@ const startTimer = () => {
 const stopTimer = (timer) => clearInterval(timer)
 
 
+
 // ===================================== FETCH FUNCTIONS
 const setOptions = () => {
   options = {
@@ -576,9 +608,8 @@ const setOptions = () => {
 
 
 // ============================================================= EVENT HANDLERS
-
 const sendImg = () => fetch(`https://drawai-server.herokuapp.com/getTags`, options)
-  .then((res) => res.json(), res => console.error(res))
+  .then(res => res.json(), res => console.error(res))
   .then((data) => {
     /**
      * @type {Array<string>} Array of tags returned from API after analyzing image
